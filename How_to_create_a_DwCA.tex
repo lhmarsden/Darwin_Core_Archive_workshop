@@ -1,0 +1,103 @@
+\documentclass[a4paper,english, 11pt]{article}
+
+\usepackage[a4paper,inner=2.5cm,outer=2.5cm,top=2.5cm,bottom=2.5cm,pdftex]{geometry} 
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
+\usepackage{enumerate}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{booktabs} % For better table formatting
+\usepackage{array} % for the 'p' column type
+\hypersetup{colorlinks=true,linkcolor=blue, linktocpage}
+
+\newcommand{\emailme}{\href{mailto:lukem@unis.no}{lukem@unis.no}}
+
+% header
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhfoffset[L]{1cm} % left extra length
+\fancyhfoffset[R]{1cm} % right extra length
+\rhead{\today}
+\lhead{\bfseries UNIS data management plan}
+% footer
+\rfoot{page \thepage\ of \pageref*{LastPage}}
+
+% title
+\title{How to create a Darwin Core Archive}
+\date{\today}
+\author{Luke Marsden (\emailme)}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{What is a Darwin Core Archive (DwCA) and why do we use them?}
+\label{s:whatwhy}
+
+\section{GBIF, OBIS and a network of data}
+\label{s:gbif}
+
+There are a number of data centres and services that manage Darwin Core data. GBIF (Global Biodiversity Information Facility) is the largest. Most (all?) of the other Darwin Core services make their data available via GBIF as well as their own platform. So if you publish your data with any of the below services, your data will also be available via GBIF.
+
+\begin{table}[h!]
+\centering
+\caption{A network of Darwin Core data. This table is just a small selection of the services available.}
+\begin{tabular}{cp{6cm}p{6.5cm}}
+\toprule
+Name & Website       & Comment  \\
+\midrule
+OBIS       & \url{https://obis.org/} & Only marine data. The OBIS community have been pushing the DwC standards forwards to build better functionality for scientific data.      \\
+iNaturalist       & \url{https://www.inaturalist.org/} & For citizen science, nature enthusiasts and researchers. Offer some great apps like Seek that you can use on your mobile phone for taking pictures, identifying the organism and publishing the data \url{https://www.inaturalist.org/pages/seek_app}     \\
+Living Norway     & \url{https://livingnorway.no/} & Norwegian ecological data project     \\
+Artsdatabanken  & \url{https://www.artsdatabanken.no/} &  Service for collecting, organizing, and disseminating data related to Norwegian flora and fauna \\
+\bottomrule
+\end{tabular}
+\end{table} 
+
+\section{Cores and extensions}
+\label{s:cores and extensions}
+
+\section{How to create a Darwin Core Archive}
+\label{s:how}
+
+\subsection{Creating the CSV files}
+\label{ss:CSVs}
+
+\subsubsection{Template Generator}
+\label{sss:tg}
+
+\subsubsection{Using R}
+\label{sss:r}
+
+\subsubsection{Using a spreadsheet software e.g. Excel}
+\label{sss:excel}
+
+\subsection{Creating a DwCA from your CSVs}
+\label{ss:csv2dwca}
+
+Once you have your CSV files, creating a DwCA is easy. You can using the integrated publishing toolkit (IPT), developed by GBIF, to create the DwCA and also publish it.
+
+\subsection{The Integrated Publishing Toolkit (IPT)}
+\label{ss:ipt}
+
+\subsubsection{Finding an IPT}
+\label{sss:findingipt}
+
+\section{Making your data available via SIOS}
+\label{s:sios}
+
+\section{Citing your data in your paper}
+\label{s:citing}
+
+Cite your paper just as you would cite any other scientific publication - in your list of references. You can also mention the data in a data availablity statement if your chosen journal requires one, but this should be as well as (not instead of) including the data in your list of references.
+
+The recommended citation can be seen on the landing page of the dataset in the data centre you chose to publish with (GBIF or NMDC most likely).
+
+\end{document} 
