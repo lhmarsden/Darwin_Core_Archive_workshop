@@ -11,11 +11,13 @@
 \usepackage{enumerate}
 \usepackage{fancyhdr}
 \usepackage{lastpage}
+\usepackage{tcolorbox}
 \usepackage{booktabs} % For better table formatting
 \usepackage{array} % for the 'p' column type
 \hypersetup{colorlinks=true,linkcolor=blue, linktocpage}
 
-\newcommand{\emailme}{\href{mailto:lukem@unis.no}{lukem@unis.no}}
+\newcommand{\emailme}{\href{mailto:lukem@met.no}{lukem@met.no}}
+\graphicspath{{Images/}} 
 
 % header
 \pagestyle{fancy}
@@ -52,13 +54,6 @@ Darwin Core is a data standard originally developed for biodiversity informatics
 
 A Darwin Core Archive (DwCA) is a self-describing dataset for taxonomic (species) data and sampling event data. It consists or one or more data tables (CSV files) and 2 XML files, one (meta.xml) that describes how the files are organised and a second  (eml.xml) that provides the metadata describing the dataset as a whole. They are zipped together to create the Darwin Core Archive (DwCA) (Figure \ref{fig:dwca}). 
 
-Each CSV file contains a number of rows, and every row has its own unique ID. These IDs are used to link the CSV files together. Every row in every `extension' CSV file must include the ID of one row in the `core' CSV file. This is called the `star schema' and you can think of the core as the centre of the star. Note that a DwCA can only include a single `level' of extensions. In other words, it cannot include an extension to an extension file.
-
-
-It has a single core in the centre of the star, for example event records, where a single row corresponds to a single event. 
-Each row has its own ID.  
-This central core can then optionally be surrounded by extension tables, linked to the central core using this ID. 
-
 \begin{figure}[htb]
     \tcbox[colback=white]{
     \includegraphics[width=0.7\textwidth]{dwca.png}
@@ -69,6 +64,20 @@ This central core can then optionally be surrounded by extension tables, linked 
         It also contains a meta.xml file that describes what columns each CSV contains and links them to the term in a controlled volcabulary, and an eml.xml file that provides metadata that describes the dataset as a whole. They are zipped together to create a Darwin Core Archive.
     }
 \end{figure}
+
+Each CSV file contains a number of rows, and every row has its own unique ID (Figure \ref{fig:csvs}). These IDs are used to link the CSV files together. Every row in every `extension' CSV file must include the ID of one row in the `core' CSV file. This is called the `star schema' and you can think of the core as the centre of the star. Note that a DwCA can only include a single `level' of extensions. In other words, it cannot include an extension to an extension file.
+
+\begin{figure}[htb]
+    \tcbox[colback=white]{
+    \includegraphics[width=1.0\textwidth]{example_dwca.png}
+    }
+    \caption{\label{fig:csvs}
+        Example of a Darwin Core Archive with an Event Core and 2 extensions; an Occurrence Extension and a Extended Measurement Or Facts Extension. Not that this example does not include all the required columns for each core or extension. 
+    }
+\end{figure}
+
+It has a single core in the centre of the star, for example event records, where a single row corresponds to a single event. 
+This central core can then optionally be surrounded by extension tables, linked to the central core using this ID. 
 
 For more information on DwCA, see \url{https://ipt.gbif.org/manual/en/ipt/2.5/dwca-guide}.
 
@@ -112,41 +121,109 @@ Artsdatabanken  & \url{https://www.artsdatabanken.no/} &  Service for collecting
 
 Which cores and extensions should you include in your DwCA? 
 
-For most scientific data, you should be include and `Event Core', where 1 row is 1 sampling event. This can also be hierarchical, using eventID and parentEventID. For example.
+For most scientific data, you should be include and `Event Core', where 1 row is 1 sampling event. This can also be hierarchical, using eventID and parentEventID (Figure \ref{fig:eventcore}). 
+\\
+\\
+\url{https://rs.gbif.org/core/dwc_event_2022-02-02.xml}
 
-INCLUDE EXAMPLE TABLE.
+\begin{figure}[htb]
+    \tcbox[colback=white]{
+    \includegraphics[width=1.0\textwidth]{example_event_core.png}
+    }
+    \caption{\label{fig:eventcore}
+        Example of a hierarchical event core. The research cruise is the parent of the children sampling activities. This is shown using the eventID and parentEventID columns. 
+    }
+\end{figure}
 
-MENTION TEMPLATE GENERATOR FOR EXTENSIONS
+You will most likely also have an occurrence extension, where one row is an observation of an organism of group of organisms of the same species.
+\\
+\\
+\url{https://rs.gbif.org/core/dwc_occurrence_2022-02-02.xml}
+\\
+\\
+Measurements related to the sampling event or occurrence (e.g. mass of your organism) go in an Extended Measurement or Facts extension.
+\\
+\\
+\url{https://rs.gbif.org/extension/obis/extended_measurement_or_fact_2023-08-28.xml}
+\\
+\\
+If you have material samples (soil, faeces) that you have taken your can log them using a Material Sample extension.
+\\
+\\
+\url{https://rs.gbif.org/extension/ggbn/materialsample.xml}
+\\
+\\
+If you have associated media you can refer to them using a Simple Multimedia Extension, and publish the media elsewhere. It is possible to publish these with GBIF too.
+\\
+\\
+\url{http://rs.gbif.org/extension/gbif/1.0/multimedia.xml}
+\\
+\\
+If you need to relate a row in one extension to a row in another extension, you can use the Resource Relationship Extension.
+\\
+\\
+\url{https://rs.gbif.org/extension/dwc/resource_relationship_2022-02-02.xml}
+\\
+\\
+And more extensions that are registered with GBIF can be found here.
+\\
+\\
+\url{https://rs.gbif.org/extensions.html}
 
-THEN FULL LIST OF EXTENSIONS.
+\section{Which columns are required in each extension?}
+\label{s:required_columns}
+
+It can be difficult to know which columns to include and what the minimum requirements are. Unfortunately, this information is not easy to find online. You can contact the data centre that you are publishing your data with.
+
+I have also developed the Nansen Legacy spreadsheet template generator for Darwin Core Archives that has requirements and recommendations for different cores and extensions included. 
+\\
+\\
+\url{https://www.nordatanet.no/aen/template-generator/config%3DDarwin%20Core}
+\\
+\\
+If you notice any issues with this or want to see something else added, please get in touch, or better still, raise an issue on GitHub.
+\\
+\\
+\url{https://github.com/SIOS-Svalbard/Nansen_Legacy_template_generator}
 
 \section{How to create a Darwin Core Archive}
 \label{s:how}
 
-
+To create a Darwin Core Archive you first have to create the CSV files. Then, you can use the Integrated Publishing Toolkit (IPT), developed by GBIF, to turn them into a Darwin Core Archive.
 
 \subsection{Creating the CSV files}
 \label{ss:CSVs}
 
-TEMPLATE GENERATOR
+You could use the Nansen Legacy template generator to help you with this. This will help you create a spreadsheet with a separate sheet for each core and extension (Figure \ref{fig:tg}). The descriptions for each term will appear as notes each time you select a cell to help you fill it in. I advise that you export each sheet to separate CSV files before you proceed with creating the Darwin Core Archive.
 
-DON'T HAVE TO USE, BUT GOOD TO TELL YOU WHICH TERMS ARE REQUIRED.
+\begin{figure}[htb]
+    \tcbox[colback=white]{
+    \includegraphics[width=0.8\textwidth]{tg.png}
+    }
+    \caption{\label{fig:tg}
+        The Nansen Legacy template generator (a) and an example template (b)
+    }
+\end{figure}
+
+Alternatively, you can create CSV files in any of way that you prefer. You can go to \url{https://rs.gbif.org/extensions.html} to see which cores and extensions you can use and which terms you can include in each. Note that it does not tell you which terms are required. This varies between data centres - GBIF has slightly different minimum requirements to OBIS for example for certain extensions.
 
 \subsection{Creating a DwCA from your CSVs}
 \label{ss:csv2dwca}
 
 Once you have your CSV files, creating a DwCA is easy. You can using the integrated publishing toolkit (IPT), developed by GBIF, to create the DwCA and also publish it.
 
-FIND AN IPT
+Here is a map of places that have an IPT installed \url{https://www.gbif.org/ipt}. Choose one, contact them and ask for login details to their node.
 
-HOW TO USE THE IPT
+For most people in Norway, good choices are the Norwegian Marine Data Centre (operated by IMR) - \href{mailto:datahjelp@imr.no }{datahjelp@imr.no}, or GBIF Norway - \href{mailto:helpdesk@gbif.no}{helpdesk@gbif.no}
 
 \section{Making your data available via SIOS}
 \label{s:sios}
 
-NMDC has a node
+Data relevant to Svalbard should be available via the SIOS data access portal \url{https://sios-svalbard.org/metsis/search?f%5B0%5D=dataset_level%3ALevel-1}
 
-GBIF Norway need to link manually.
+If you have published your data with NMDC, they contribute to SIOS so the data will be made available via the SIOS. Just let them know that you want your data to be available via SIOS.
+
+GBIF Norway need to link manually. You can use the metadata collection form on SIOS to do this. You will need to log in first. \url{https://sios-svalbard.org/metadata-collection-form}
 
 \section{Citing your data in your paper}
 \label{s:citing}
